@@ -25,6 +25,12 @@ ruleTester.run('enforce', rule, {
       code: "import { a, b, c, d } from './test'",
     },
     {
+      code: "import type { a, b, c, d } from './test'",
+    },
+    {
+      code: "import { type a, b, type c, d } from './test'",
+    },
+    {
       code: "import { a, b, c, d } from './test'",
       options: [6],
     },
@@ -36,6 +42,14 @@ ruleTester.run('enforce', rule, {
     },
     {
       code: "import {\na,\nb,\nc\n} from './test'",
+      options: [2],
+    },
+    {
+      code: "import type {\na,\nb,\nc\n} from './test'",
+      options: [2],
+    },
+    {
+      code: "import {\ntype a,\nb,\ntype c\n} from './test'",
       options: [2],
     },
     {
@@ -270,6 +284,12 @@ ruleTester.run('enforce', rule, {
     {
       code: "import type { a, b, c, d } from './test'",
       output: "import type {\na,\nb,\nc,\nd\n} from './test'",
+      options: [1],
+      errors: [{ messageId: 'mustSplitMany' }],
+    },
+    {
+      code: "import { type a, b, type c, d } from './test'",
+      output: "import {\ntype a,\nb,\ntype c,\nd\n} from './test'",
       options: [1],
       errors: [{ messageId: 'mustSplitMany' }],
     },
