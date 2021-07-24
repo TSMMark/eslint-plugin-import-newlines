@@ -1,11 +1,19 @@
 /* eslint-env mocha */
 const { RuleTester } = require('eslint');
+const fs = require('fs');
 const rule = require('../lib/enforce.js');
 
 const ruleTester = new RuleTester({
+  parser: fs.realpathSync('./node_modules/@babel/eslint-parser'),
   parserOptions: {
     ecmaVersion: 2015,
+    requireConfigFile: false,
     sourceType: 'module',
+    babelOptions: {
+      presets: [
+        '@babel/preset-flow',
+      ],
+    },
   },
 });
 
@@ -258,6 +266,12 @@ ruleTester.run('enforce', rule, {
         semi: true,
       }],
       errors: [{ messageId: 'mustSplitLong' }],
+    },
+    {
+      code: "import type { a, b, c, d } from './test'",
+      output: "import type {\na,\nb,\nc,\nd\n} from './test'",
+      options: [1],
+      errors: [{ messageId: 'mustSplitMany' }],
     },
   ],
 });
